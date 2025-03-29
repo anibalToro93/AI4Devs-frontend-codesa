@@ -1,0 +1,43 @@
+<div class="position-container">
+    <button class="back-button" (click)="goBack()">← Volver</button>
+    <h1 class="position-header">{{ positionName }}</h1>
+  
+    <!-- Verificar que los datos estén cargados antes de renderizar -->
+    <div *ngIf="interviewSteps.length > 0 && candidates.length > 0">
+      <div class="kanban-board candidate-columns">
+        <div
+          class="step-column"
+          *ngFor="let step of interviewSteps"
+          cdkDropList
+          [cdkDropListData]="candidates.filter(c => c.stepId === step.id)"
+          (cdkDropListDropped)="onDrop($event, step.id)"
+        >
+          <div class="step-header">
+            <h2 class="step-title">{{ step.name }}</h2>
+            <span class="candidate-count">
+              {{ candidates.filter(c => c.stepId === step.id).length }}
+            </span>
+          </div>
+  
+          <div
+            class="candidate-card"
+            *ngFor="let candidate of candidates.filter(c => c.stepId === step.id)"
+            cdkDrag
+            [cdkDragData]="candidate"
+          >
+            <p>{{ candidate.name }}</p>
+            <p>Puntuación: {{ candidate.score }}</p>
+          </div>
+  
+          <div *ngIf="candidates.filter(c => c.stepId === step.id).length === 0" class="empty-step">
+            <p>Sin candidatos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Mensaje de carga si los datos aún no están disponibles -->
+    <div *ngIf="interviewSteps.length === 0 || candidates.length === 0" class="loading-message">
+      <p>Cargando datos...</p>
+    </div>
+  </div>
